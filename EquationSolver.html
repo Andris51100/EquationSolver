@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equation Solver</title>
+</head>
+<body>
+
+<h2>Equation Solver</h2>
+
+<label for="equationInput">Enter equation:</label>
+<input type="text" id="equationInput" placeholder="e.g., x + 3 = x / 2">
+
+<button onclick="calculate()">Calculate</button>
+
+<p id="result"></p>
+
+<script>
+function calculate() {
+    // Get the equation from the input box
+    var equation = document.getElementById('equationInput').value;
+
+    // Split the equation into left and right sides
+    var sides = equation.split('=');
+    var leftSide = sides[0].trim();
+    var rightSide = sides[1].trim();
+    var solutions = [];
+    var c = 100000;
+    var xCopy = 0;
+    for (var x = -10000; x <= 10000; x++) {
+        var leftResult = eval(leftSide.replace(/x/g, x));
+        var rightResult = eval(rightSide.replace(/x/g, x));
+        if (Math.abs(leftResult-rightResult) < c) {
+            c = Math.abs(leftResult-rightResult);
+            xCopy = x;
+        }
+        if (leftResult === rightResult) {
+            //document.getElementById('result').innerHTML = 'Solution found: x = ' + x;
+            solutions.push(x);
+            //return;
+        }
+    }
+    if (solutions.length > 10) document.getElementById('result').innerHTML = "Multiple solutions, for example: " + solutions[0];
+    else if (solutions.length > 0) {
+        var s = "";
+        for (let i = 0; i < solutions.length; i++) {
+            s += solutions[i];
+            if (i+1 < solutions.length) s += ", ";
+        }
+        document.getElementById('result').innerHTML = "Solution found: x = " + s;
+    }
+    else {
+        for (let x = xCopy-1; x < xCopy+1; x += 0.0001) {
+            var leftResult = eval(leftSide.replace(/x/g, x));
+            var rightResult = eval(rightSide.replace(/x/g, x));
+            if (leftResult.toFixed(8) === rightResult.toFixed(8) || Math.abs(leftResult-rightResult) < 0.0001) {
+                //document.getElementById('result').innerHTML = 'Solution found: x = ' + x;
+                solutions.push(x.toFixed(8));
+                //return;
+            }
+        }
+        if (solutions.length > 10) document.getElementById('result').innerHTML = "Multiple solutions, for example: " + solutions[0];
+        else if (solutions.length > 0) {
+            var s = "";
+            for (let i = 0; i < solutions.length; i++) {
+                s += solutions[i];
+                if (i+1 < solutions.length) s += ", ";
+            }
+            document.getElementById('result').innerHTML = "Solution found: x = " + s;
+        }
+        else document.getElementById('result').innerHTML = 'No solution found for the given range.';
+    }
+    //document.getElementById('result').innerHTML = 'No solution found for the given range.';
+}
+</script>
+
+</body>
+</html>
